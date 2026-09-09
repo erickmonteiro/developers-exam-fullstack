@@ -20,8 +20,8 @@ public abstract class EntityTypeConfiguration<TEntity> : IEntityTypeConfiguratio
 
         builder.Ignore(p => p.RuleLevelCascadeMode);
 
-        //builder.Ignore(p => p.ValidationResult);
+        builder.Ignore(p => p.ValidationResult);
 
-        //builder.Ignore(p => p.DomainEvents);
+        builder.Ignore(p => p.DomainEvents);
     }
 }

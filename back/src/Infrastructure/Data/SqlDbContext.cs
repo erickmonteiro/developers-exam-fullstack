@@ -1,4 +1,5 @@
 using System.Reflection;
+using Domain.Events;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -9,6 +10,8 @@ public class SqlDbContext : DbContext
 {
     private readonly IDomainEventHandler _domainEventService;
 
+    public DbSet<Domain.Entities.Book> Books => Set<Domain.Entities.Book>();
+    
     public SqlDbContext(DbContextOptions<SqlDbContext> options, IDomainEventHandler domainEventService) : base(options)
         => _domainEventService = domainEventService;
 
@@ -23,7 +26,9 @@ public class SqlDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+	    modelBuilder.Ignore<DomainEvent>();
+	    
+	    modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         var dateTimeConverter = new ValueConverter<DateTime, DateTime>(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
