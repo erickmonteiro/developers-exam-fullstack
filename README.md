@@ -54,7 +54,7 @@ cd src/WebAPI
 dotnet run
 ```
 
-Backend roda em: `http://localhost:5240`
+Backend roda em: `http://localhost:5015`
 
 ### Rodando o Frontend
 ```bash
