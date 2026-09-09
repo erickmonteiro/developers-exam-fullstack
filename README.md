@@ -14,8 +14,8 @@ emails) e os handlers do MediatR. Ela basicamente implementa os contratos e inte
 
 ### Qual o papel da camada WebAPI?
 
-Ela recebe as requisicoes HTTP, trata os DTOs, controla os status codes corretos das respostas (200, 201, 400, 404, etc) e orquestra as chamadas pros servicos ou
-repositorios, ela não deve ter regra de negócio, só transporte de dados.
+Ela recebe as requisicoes HTTP, trata os DTOs, controla os status codes corretos das respostas (200, 201, 400, 404, etc) e orquestra as chamadas pros servicos ou repositorios, ela
+não deve ter regra de negócio, só transporte de dados.
 
 ### Aponte um ponto de melhoria que considere relevante para o projeto.
 
@@ -25,6 +25,19 @@ pipeline do MediatR e deixar os controllers ainda mais enxutos. Pra envio de eve
 falhe apos salvar no banco.
 
 ---
+
+## Resumo das Entregas Realizadas
+
+- **CRUD completo de Livros:** Endpoints para listagem paginada, busca por ID, criação, atualização e remoção na rota `/api/books`.
+- **Validações de Domínio:** Regras de negócio encapsuladas na entidade `Book` via `FluentValidation` (título e autor entre 10 e 100 caracteres, descrição até 1024).
+- **Proteção contra duplicidade:** Validação de título único na API com índice único no banco via mapeamento do EF Core (`BookMapping`).
+- **Bônus (Domain Events):** Disparo automático de `BookCreatedEvent` interceptado pelo `SqlDbContext` e consumido via `MediatR` acionando o `IEmailService` para
+  `developers@inspand.com.br`.
+- **Documentação Interativa (Scalar):** Configuração do **Scalar API Reference** integrado ao OpenAPI nativo do .NET para testar e validar todos os endpoints direto pelo
+  navegador na rota [http://localhost:5015/scalar/v1](http://localhost:5015/scalar/v1).
+- **Observação sobre o escopo:** Devido ao limite de tempo e como a vaga é Back-End, não desenvolvi as telas de criação e edição, foquei na entrega da API e da 
+  arquitetura (.NET,
+  Clean Architecture, validações, EF Core e Domain Events), mantendo a listagem e integração funcional no front-end.
 
 ---
 
