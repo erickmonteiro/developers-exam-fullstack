@@ -1,22 +1,55 @@
 ﻿# INSPAND Developers Exam - Full Stack
 
+## Resposta do feedback esperado
+
+### Qual o papel da camada Domain?
+
+O Domain e o coracao do projeto. E onde ficam as regras de negócio, as entidades e os eventos de dominio sem nenhuma ligacao com banco, framework ou pacote externo. As entidades
+aqui se auto-validam pra nunca existirem com dados inconsistentes na memoria, independente de onde forem chamadas.
+
+### Qual o papel da camada Infrastructure?
+
+E a camada que resolve a parte pesada e lida com o mundo de fora. Aqui fica o acesso ao banco com o EF Core, mapeamentos, migrations, conexao com serviços terceiros (como envio de
+emails) e os handlers do MediatR. Ela basicamente implementa os contratos e interfaces que o Domain definiu, permitindo trocar banco ou serviço externo sem mexer no negócio.
+
+### Qual o papel da camada WebAPI?
+
+Ela recebe as requisicoes HTTP, trata os DTOs, controla os status codes corretos das respostas (200, 201, 400, 404, etc) e orquestra as chamadas pros servicos ou
+repositorios, ela não deve ter regra de negócio, só transporte de dados.
+
+### Aponte um ponto de melhoria que considere relevante para o projeto.
+
+Um ponto legal de evolucao seria criar uma camada intermediaria de Application usando CQRS na pratica com MediatR. Do jeito atual, os controllers ainda injetam o SqlDbContext e
+IRepository direto pra checar duplicidade e fazer consultas. Separando em Commands e Queries daria pra isolar melhor a WebAPI, plugar validacoes com FluentValidation direto no
+pipeline do MediatR e deixar os controllers ainda mais enxutos. Pra envio de eventos em producao, tambem avaliaria um Outbox Pattern pra garantir resiliencia caso a notificacao
+falhe apos salvar no banco.
+
+---
+
+---
+
+---
+
 ## Visão Geral
 
-Projeto de avaliação full-stack implementando uma plataforma de gerenciamento de livros com operações CRUD. Algumas funcionalidades foram intencionalmente deixadas não implementadas para você completar.
+Projeto de avaliação full-stack implementando uma plataforma de gerenciamento de livros com operações CRUD. Algumas funcionalidades foram intencionalmente deixadas não
+implementadas para você completar.
 
 ## Stack Tecnológica
 
 ### Backend
+
 - **.NET 10** (SDK 10.0.100)
 - **Clean Architecture** com 3 camadas:
-  - `Domain` - Lógica de negócio e entidades
-  - `Infrastructure` - Acesso a dados e serviços externos
-  - `WebAPI` - Endpoints HTTP e controllers
+	- `Domain` - Lógica de negócio e entidades
+	- `Infrastructure` - Acesso a dados e serviços externos
+	- `WebAPI` - Endpoints HTTP e controllers
 - **Entity Framework Core 10** com SQL Server
 - **MediatR** para CQRS e eventos
 - **FluentValidation** para validação de domínio
 
 ### Frontend
+
 - **Vue 3.5.13** com Options API
 - **Vue Router 4.5.0** para roteamento
 - **Vite 6** como build tool
@@ -25,6 +58,7 @@ Projeto de avaliação full-stack implementando uma plataforma de gerenciamento 
 ## Começando
 
 ### Pré-requisitos
+
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [Node.js](https://nodejs.org/) (v18+ recomendado)
 - SQL Server 2017+ (ou use Docker - veja abaixo)
@@ -32,12 +66,14 @@ Projeto de avaliação full-stack implementando uma plataforma de gerenciamento 
 ### Configuração do Banco de Dados
 
 **Opção 1: Docker (Recomendado)**
+
 ```bash
 cd back
 docker-compose up -d
 ```
 
 Isso sobe o SQL Server 2017 em `localhost:1433`:
+
 - **Database**: `INSPAND_Exam`
 - **Usuário**: `sa`
 - **Senha**: `5Gi3re61sXehuSGxMqHX`
@@ -46,6 +82,7 @@ Isso sobe o SQL Server 2017 em `localhost:1433`:
 Atualize a connection string em `back/src/WebAPI/appsettings.json` para apontar para sua instância.
 
 ### Rodando o Backend
+
 ```bash
 cd back
 dotnet restore
@@ -57,6 +94,7 @@ dotnet run
 Backend roda em: `http://localhost:5015`
 
 ### Rodando o Frontend
+
 ```bash
 cd front
 npm install
@@ -74,6 +112,7 @@ Construir um sistema de gerenciamento de livros com operações CRUD completas.
 ### Histórias de Usuário
 
 **Como administrador, desejo:**
+
 - Visualizar uma lista de todos os livros na home page (com paginação)
 - Criar novos livros
 - Editar livros existentes
@@ -82,6 +121,7 @@ Construir um sistema de gerenciamento de livros com operações CRUD completas.
 ### Campos Obrigatórios
 
 Cada livro deve ter:
+
 - **Título** (10-100 caracteres)
 - **Autor** (10-100 caracteres)
 - **Descrição** (máximo 1024 caracteres)
