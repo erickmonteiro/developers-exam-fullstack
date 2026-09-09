@@ -1,3 +1,4 @@
+using Domain.Events;
 using FluentValidation;
 
 namespace Domain.Entities;
@@ -21,6 +22,11 @@ public class Book : Entity<Book>
 
 		SetLastAction();
 		Validate();
+
+		if (ValidationResult.IsValid)
+		{
+			DomainEvents.Add(new BookCreatedEvent(this));
+		}
 	}
 
 	public void Update(string title, string author, string description)
