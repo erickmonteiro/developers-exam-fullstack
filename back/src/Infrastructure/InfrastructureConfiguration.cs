@@ -1,6 +1,7 @@
 using System.Reflection;
 using Domain.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Data.Repositories;
 using Infrastructure.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,19 +11,25 @@ namespace Infrastructure;
 
 public static class InfrastructureConfiguration
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SQLConnection"), b => b.MigrationsAssembly(typeof(SqlDbContext).Assembly.FullName)));
+	public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+	{
+		services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(
+				configuration.GetConnectionString("SQLConnection"), b => b.MigrationsAssembly(typeof(SqlDbContext).Assembly.FullName)
+			)
+		);
 
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-        });
-        
-        services.AddScoped<IDomainEventHandler, DomainEventHandler>();
+		services.AddMediatR(cfg =>
+			{
+				cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+			}
+		);
 
-        services.AddScoped<SqlDbContext>();
+		services.AddScoped<IDomainEventHandler, DomainEventHandler>();
 
-        return services;
-    }
+		services.AddScoped<SqlDbContext>();
+
+		services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+		return services;
+	}
 }
